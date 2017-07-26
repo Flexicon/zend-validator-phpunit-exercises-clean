@@ -14,5 +14,29 @@ use Zend\Validator\IsInstanceOf;
 
 class BarcodeTest extends \PHPUnit_Framework_TestCase
 {
-    public function testTest() { }
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject|AbstractAdapter
+     */
+    private $abstractAdapterMock;
+
+    public function setup() {
+        $this->abstractAdapterMock = $this->getMockBuilder(AbstractAdapter::class)
+            ->setMethods(array(
+                'getLength',
+                'hasValidLength'
+            ))->getMock();
+    }
+
+    public function testGetLengthCalledAtleastOnce() {
+        $this->abstractAdapterMock->expects($this->atLeastOnce())->method('getLength')->willReturn(10);
+        $testObj = new Barcode($this->abstractAdapterMock);
+        $this->assertFalse($testObj->isValid('Test'));
+    }
+
+    public function testHasValidLengthReceivesValueThroughIsValid() {
+        $value = 'Test';
+        $this->abstractAdapterMock->expects($this->atLeastOnce())->method('hasValidLength')->with($value)->willReturn(10);
+        $testObj = new Barcode($this->abstractAdapterMock);
+        $this->assertFalse($testObj->isValid($value));
+    }
 }

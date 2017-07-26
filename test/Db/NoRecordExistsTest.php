@@ -13,5 +13,15 @@ use Zend\Validator\Db\NoRecordExists;
 
 class NoRecordExistsTest extends \PHPUnit_Framework_TestCase
 {
-    public function testTest() { }
+    /**
+     * @expectedException RuntimeException
+     */
+    public function testThrowExceptionWhenNoAdapterPassed()
+    {
+        $testObj = new NoRecordExists([
+            'table' => 'testTable',
+            'field' => 'testField'
+        ]);
+        $testObj->isValid('');
+    }
 }
